@@ -10,7 +10,7 @@
 # global variables (note: point to REFERENCE)
 INPUT_FOLDER="02_prepared_data"
 #MAPPED_FOLDER="04_mapped"
-REFERENCE="02_raw_data/Ssa_ASM_3.6.fasta"
+REFERENCE="/project/lbernatchez/drobo/users/bensuth/00_resources/Ssa_ASM_3.6.fasta"
 
 # Map reads using bwa mem 
 ls -1 $INPUT_FOLDER/*remadapt*.fastq.gz |
@@ -19,7 +19,7 @@ ls -1 $INPUT_FOLDER/*remadapt*.fastq.gz |
     while read i
     do
         echo $i
-        bwa mem -t 8 -T 30 $REFERENCE "$i"R1.fastq.gz "$i"R2.fastq.gz > "$i".aln.sam
+        bwa mem -t 8 -T 30 $REFERENCE "$i"R1.fastq.gz "$i"R2.fastq.gz > "$i"aln.sam
         samtools view -Sb -F 4 > "$i".mapped_only.bam
         samtools sort "$i".mapped_only.bam $i
         samtools index $i.bam
