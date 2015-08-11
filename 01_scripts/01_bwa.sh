@@ -12,17 +12,20 @@ INPUT_FOLDER="02_prepared_data"
 #MAPPED_FOLDER="04_mapped"
 REFERENCE="/project/lbernatchez/drobo/users/bensuth/00_resources/Ssa_ASM_3.6.fasta"
 
+# note here that we keep only the mapped reads by using the -F 4 flag in samtools view
+
+
 # Map reads using bwa mem 
-ls -1 $INPUT_FOLDER/*remadapt*.fastq.gz |
+ls -1 $INPUT_FOLDER/*.fastq.gz |
     perl -pe 's/R[12]\.fastq\.gz//' |
     sort -u |
     while read i
     do
         echo $i
-        bwa mem -t 8 -T 30 $REFERENCE "$i"R1.fastq.gz "$i"R2.fastq.gz > "$i"aln.sam
-        samtools view -Sb -F 4 > "$i".mapped_only.bam
-        samtools sort "$i".mapped_only.bam $i
-        samtools index $i.bam
+        bwa mem -t 10 $REFERENCE "$i"R1.fastq.gz "$i"R2.fastq.gz > $i.sam
+        samtools view -Sb -F 4 $i.sam > $i.mapped_only.bam
+        samtools sort $i.mapped_only.bam $i.sorted.bam
+        samtools index $i.sorted.bam
     done
 
 # clean up space
